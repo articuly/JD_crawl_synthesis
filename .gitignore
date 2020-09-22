@@ -140,14 +140,4 @@ dmypy.json
 cython_debug/
 
 .gitignore
-.idea/.gitignore
-.idea/JD_crawl_synthesis.iml
-.idea/codeStyles/
-.idea/inspectionProfiles/
-.idea/misc.xml
-.idea/modules.xml
-app.py
-libs/
-static/
-templates/
 /.idea/
