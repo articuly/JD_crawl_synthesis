@@ -28,7 +28,7 @@ def run_spider():
     if form.validate():
         url = form.url.data
         goods_id = re.findall("(\d+)", url)[0]
-        if goods_id in None:
+        if goods_id is None:
             return ''
         session['goods_id'] = goods_id
         goods_info = GoodsInfo.query.get(goods_id)
@@ -61,8 +61,8 @@ def jd_analysis():
         wordcloud_path = os.path.join(analysis_result_path, 'comment_wordcloud.png')
         res = {
             'status': 'finish',
-            'goods_info': {'goods_name': goods_id.goods_name,
-                           'goods_price': goods_id.goods_price},
+            'goods_info': {'goods_name': goods_info.goods_name,
+                           'goods_price': goods_info.goods_price},
             # 将分析结果的图片路经由绝对路经转为Web访问路经
             'comments': comments_path.replace(app.config['BASEDIR'], ''),
             'wordcloud': wordcloud_path.replace(app.config['BASEDIR'], ''),
@@ -71,8 +71,11 @@ def jd_analysis():
 
 
 def send_spider_request(goods_id):
-    pass
-
-
-if __name__ == '__main__':
-    app.run()
+    # 利用redis防止重复爬取某个商品
+    if redis.sismember('crawling_goods_id', goods_id):
+        return
+    redis.sadd('crawling_goods_id', goods_id)
+    c_client = socket(AF_INET, SOCK_STREAM)
+    c_client.connect(('127.0.0.1', 8801))
+    c_client.send(goods_id.encode())
+    c_client.close()
