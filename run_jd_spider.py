@@ -9,10 +9,6 @@ from mysql.connector import pooling
 
 # 缓存
 redis = StrictRedis('127.0.0.1')
-# 建立tcp服务器，监听爬虫请求
-# spider_server = socket(AF_INET, SOCK_STREAM)
-# spider_server.bind(('0.0.0.0', 8800))
-# spider_server.listen()
 # 可多进程运行
 spider_pool = ProcessPoolExecutor(max_workers=4)
 
@@ -79,15 +75,19 @@ if __name__ == '__main__':
     # 单进程执行
     # run_spider(508411)
     # 多进程执行
-    spider_pool.submit(run_spider, 100002183459)
-    spider_pool.submit(run_spider, 100005855774)
-    spider_pool.submit(run_spider, 100012583158)
-    spider_pool.submit(run_spider, 70349975885)
+    # spider_pool.submit(run_spider, 100002183459)
+    # spider_pool.submit(run_spider, 100005855774)
+    # spider_pool.submit(run_spider, 100012583158)
+    # spider_pool.submit(run_spider, 70349975885)
 
+    # 建立tcp服务器，监听爬虫请求
+    spider_server = socket(AF_INET, SOCK_STREAM)
+    spider_server.bind(('127.0.0.1', 8801))
+    spider_server.listen()
     # 通过socket链接启动：
-    # while True:
-    #     client_sock, client_address = spider_server.accept()
-    #     goods_id = client_sock.recv(30).decode()
-    #     print('crawling', goods_id)
-    #     client_sock.close()
-    #     spider_pool.submit(run_spider, goods_id)
+    while True:
+        client_sock, client_address = spider_server.accept()
+        goods_id = client_sock.recv(30).decode()
+        print('crawling', goods_id)
+        client_sock.close()
+        spider_pool.submit(run_spider, goods_id)

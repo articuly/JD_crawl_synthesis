@@ -29,19 +29,14 @@ def run_analysis(goods_id):
     jd_analysis.update_goods_info()
 
 
-# if __name__=='__main__':
-#     redis.rpush('can_analysis', 100002183459)
-#     redis.rpush('can_analysis', 100005855774)
-#     redis.rpush('can_analysis', 100012583158)
-#     redis.rpush('can_analysis', 70349975885)
-#     while True:
-#         goods_id = redis.blpop('can_analysis')
-#         # 链接的元素为b字条，要解码，第一个元素是链表名，第二个是商品ID
-#         goods_id = goods_id[1].decode()
-#         process_pool.submit(run_analysis, goods_id)
+if __name__ == '__main__':
+    #     redis.rpush('can_analysis', 100002183459)
+    #     redis.rpush('can_analysis', 100005855774)
+    #     redis.rpush('can_analysis', 100012583158)
+    #     redis.rpush('can_analysis', 70349975885)
 
-while True:
-    goods_id = redis.blpop('can_analysis')
-    # 链接的元素为b字条，要解码，第一个元素是链表名，第二个是商品ID
-    goods_id = goods_id[1].decode()
-    process_pool.submit(run_analysis, goods_id)
+    while True:
+        goods_id = redis.blpop('can_analysis')
+        # 链接的元素为b字条，要解码，第一个元素是链表名，第二个是商品ID
+        goods_id = goods_id[1].decode()
+        process_pool.submit(run_analysis, goods_id)
