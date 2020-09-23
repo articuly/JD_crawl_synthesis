@@ -10,9 +10,9 @@ from mysql.connector import pooling
 # 缓存
 redis = StrictRedis('127.0.0.1')
 # 建立tcp服务器，监听爬虫请求
-spider_server = socket(AF_INET, SOCK_STREAM)
-spider_server.bind(('0.0.0.0', 8800))
-spider_server.listen()
+# spider_server = socket(AF_INET, SOCK_STREAM)
+# spider_server.bind(('0.0.0.0', 8800))
+# spider_server.listen()
 # 可多进程运行
 spider_pool = ProcessPoolExecutor(max_workers=4)
 
@@ -24,9 +24,9 @@ def run_spider(goods_id):
     # 默认为为处理器个数
     thread_pool = ThreadPoolExecutor()
     try:
-        cnxpool = pooling.MySQLConnection(pool_name='mypool', pool_size=10,
-                                          user='root', password='123456',
-                                          host='127.0.0.1', database='jd', )
+        cnxpool = pooling.MySQLConnectionPool(pool_name='mypool', pool_size=10,
+                                              user='root', password='123456',
+                                              host='localhost', database='jd', )
     except Exception as e:
         print('pool error', e)
     try:
@@ -40,7 +40,7 @@ def run_spider(goods_id):
             SaveQueueMange.save_comment_summary(q, goods_comment_summary_data)
             # 加入保存队列，商品评论
             if goods_comment_summary_data:
-                pages = min(2, round(goods_comment_summary_data['CommentCount'] / 10))
+                pages = min(20, round(goods_comment_summary_data['CommentCount'] / 10))
                 futures = [thread_pool.submit(jd_spider.get_comments_list, page) for page in range(1, pages)]
                 for futures in as_completed(futures):  # 等待所有线程完成
                     data = futures.result()  # 调用futures的返回值
@@ -52,7 +52,7 @@ def run_spider(goods_id):
 
     while True:
         try:
-            cnx = cnxpool._get_connection()
+            cnx = cnxpool.get_connection()
         except Exception as e:
             print(e, 'wait......')
             time.sleep(0.1)
@@ -76,10 +76,12 @@ def run_spider(goods_id):
 
 if __name__ == '__main__':
     # 单进程执行
-    run_spider(100012583158)
+    # run_spider(508411)
     # 多进程执行
-    # spider_pool.submit(run_spider, 100002183459)
-    # spider_pool.submit(run_spider, 100005855774)
+    spider_pool.submit(run_spider, 100002183459)
+    spider_pool.submit(run_spider, 100005855774)
+    spider_pool.submit(run_spider, 100012583158)
+    spider_pool.submit(run_spider, 70349975885)
 
     # 通过socket链接启动：
     # while True:

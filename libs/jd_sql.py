@@ -3,7 +3,7 @@ class SaveQueueMange:
     @staticmethod
     def save_goods_info(q, goods_data):
         sql = "replace into `jd`.`goods_info` (`goods_id`, `goods_name`, `goods_price`) " \
-              "values ('{goods_id}', '{goods_name', '{goods_price');"
+              "values ('{goods_id}', '{goods_name}', '{goods_price}');"
         try:
             sql = sql.format(**goods_data)
         except Exception as e:
@@ -16,17 +16,18 @@ class SaveQueueMange:
     def save_comment(q, goods_id, comments):
         # print(comments)
         sql_str = "replace into `jd`.`goods_comments` set " \
-                  "comment_id={id}," \
-                  "goods_id={goods_id}," \
-                  "content={content}," \
-                  "create_time={createtionTime}," \
-                  "score={score}," \
-                  "user_client={userClient}"
+                  "`comment_id`={id}, " \
+                  "`goods_id`={goods_id}, " \
+                  "`content`='{content}', " \
+                  "`create_time`='{creationTime}', " \
+                  "`score`={score}, " \
+                  "`user_client`={userClient}"
         for comment in comments:
             try:
                 sql = sql_str.format(goods_id=goods_id, **comment)
+                # print(sql)
             except Exception as e:
-                print(comment, e)
+                print('comment', e)
             else:
                 q.put(sql)
 
@@ -50,20 +51,20 @@ class SaveQueueMange:
             'score_5_count': 0,
         }
         sql = "replace into `jd`.`goods_comment_summary` set " \
-              "goods_id={goods_id}," \
-              "comment_count={comment_count}," \
-              "default_good_count={default_good_count},  " \
-              "good_count={good_count}, " \
-              "good_rate={good_rate}," \
-              "general_count={general_count}, " \
-              "general_rate={general_rate}, " \
-              "poor_count={poor_count}, " \
-              "poor_rate={poor_rate}, " \
-              "score_1_count={score_1_count}, " \
-              "score_2_count={score_2_count}, " \
-              "score_3_count={score_3_count}, " \
-              "score_4_count={score_4_count}, " \
-              "score_5_count={score_5_count}"
+              "`goods_id`={goods_id}, " \
+              "`comment_count`={comment_count}, " \
+              "`default_good_count`={default_good_count}, " \
+              "`good_count`={good_count}, " \
+              "`good_rate`={good_rate}, " \
+              "`general_count`={general_count}, " \
+              "`general_rate`={general_rate}, " \
+              "`poor_count`={poor_count}, " \
+              "`poor_rate`={poor_rate}, " \
+              "`score_1_count`={score_1_count}, " \
+              "`score_2_count`={score_2_count}, " \
+              "`score_3_count`={score_3_count}, " \
+              "`score_4_count`={score_4_count}, " \
+              "`score_5_count`={score_5_count}"
         try:
             sql = sql.format(**comments_summary)
         except Exception as e:
@@ -82,7 +83,7 @@ class SaveQueueMange:
             cursor.close()
             print('error:', e)
         else:
-            print('sucess')
+            print('sql replace into success')
         finally:
             # 传出队列完成信号
             q.task_done()
