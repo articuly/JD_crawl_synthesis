@@ -1,32 +1,30 @@
 {% extends "base.html" %}
 
-
-
 {% block content %}
-	<div class = "index-wrapper">
-		<div class = "aside">
-			<div class = "info-card">
-				<h1>网易微专业</h1>
-				<div id = "linkicon">
-					<ul class = "icons">
-						<li>
-							<a href = "#" class = "icon fa-github"> <span class = "label">京东</span>
-							</a>
-						</li>
-					</ul>
-				</div>
-			</div>
-			<div id = "particles-js"></div>
-		</div>
-	</div>
+    <div class="index-wrapper">
+        <div class="aside">
+            <div class="info-card">
+                <h1>网易微专业</h1>
+                <div id="linkicon">
+                    <ul class="icons">
+                        <li>
+                            <a href="#" class="icon fa-github"> <span class="label">京东</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div id="particles-js"></div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block script %}
-	{# 加载显示 gmail js 函数#}
-	<script src = "/static/js/switchemail.js"></script>
-	{# 加载粒子效果 #}
-	<script src = "http://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-	<script>
+    {# 加载显示 gmail js 函数#}
+    <script src="/static/js/switchemail.js"></script>
+    {# 加载粒子效果 #}
+    <script src="http://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
         particlesJS("particles-js", {
             "particles": {
                 "number": {"value": 160, "density": {"enable": true, "value_area": 800}},
@@ -76,5 +74,5 @@
             },
             "retina_detect": true
         })
-	</script>
+    </script>
 {% endblock %}
