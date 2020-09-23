@@ -71,6 +71,7 @@ def run_spider(goods_id):
                 print(e)
     # 等待整个队列完成
     q.join()
+    # 进入缓存链表，是b字符
     redis.rpush('can_analysis', goods_id)
 
 

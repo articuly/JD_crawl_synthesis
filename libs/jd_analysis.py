@@ -43,7 +43,7 @@ class JdAnalysis:
         print(s)
         try:
             ax=s.plot(kind='pie', figsize=(12, 12), autopct='%.1f%%', wedgeprops=dict(width=0.8, edgecolor='w'),
-               startangle=-30, fontsize=16)
+               startangle=-30, fontsize=16, pctdistance=0.9, explode=(0,0,0.3), labeldistance=1.02)
         except Exception as e:
             print(e)
         try:
