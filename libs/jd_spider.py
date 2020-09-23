@@ -47,6 +47,7 @@ class JdSpider:
               "{page}&pageSize=10&isShadowSku=0&fold=1"
         return url.format(goods_id=self.goods_id, page=page)
 
+    # 获取商品信息
     def get_good_info(self):
         """
         从商品详情页面抓取商品名
@@ -84,6 +85,7 @@ class JdSpider:
         self.goods_info['goods_price'] = self.get_goods_price()
         return self.goods_info
 
+    # 获取商品价格
     def get_goods_price(self):
         callback_name = 'jQuery' + str(random.randint(111111, 999999))
         url = self.get_price_url(callback_name)
@@ -93,6 +95,7 @@ class JdSpider:
         print(price, '元')
         return price
 
+    # 获取评论概况
     def get_comments_summary(self):
         """
         抓取评论概况
@@ -111,6 +114,7 @@ class JdSpider:
             else:
                 return comments_data['CommentsCount'][0]
 
+    # 获取评论列表
     def get_comments_list(self, page):
         """
         抓取评论列表

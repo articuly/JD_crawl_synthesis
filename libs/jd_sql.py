@@ -30,6 +30,7 @@ class SaveQueueMange:
             else:
                 q.put(sql)
 
+    # 写入摘要概况的语句
     @staticmethod
     def save_comment_summary(q, comments_summary_data):
         comments_summary = {
@@ -70,6 +71,7 @@ class SaveQueueMange:
         else:
             q.put(sql)
 
+    # SQL写入数据库
     @staticmethod
     def save_into_mysql(cnx, sql, q):
         try:
@@ -82,5 +84,6 @@ class SaveQueueMange:
         else:
             print('sucess')
         finally:
+            # 传出队列完成信号
             q.task_done()
             cnx.close()
