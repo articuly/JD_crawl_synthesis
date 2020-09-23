@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}
+	<title>京东评价信息数据分析</title>
+{% endblock %}
+
+{% block content %}
+	{% include "left_nav.html" %}
+
+	<div class = "index-wrapper">
+		<div class = "index-content">
+			<div class = "content-list">
+				<div>
+					<label for ="url">请输入京东商城商品的网址 （URL）：</label><br>
+					<input type ="text" class ="form-control" id="url" name="url" placeholder="类似:https://item.jd.com/3995645.html"><br>
+					<button id = "send_btn" class = "button btn-lg" type = "button">开始分析</button>
+				</div>
+				<div class = "container">
+					<div class="row">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+							<div id="result">
+
+							</div>
+						</div>
+					</div>
+				</div>
+				<br>
+			</div>
+
+		</div>
+	</div>
+{% endblock %}
+
+{% block script %}
+	<script>
+        var interval = null;
+        var result_container = $('#result');
+        var loader = $('<img src="/static/images/loader.gif" />')
+
+        $(function(){
+            $("#send_btn").click( function(){
+
+                if (interval != null) {
+                   clearInterval(interval);
+                }
+                send_url()
+
+            });
+
+            function send_url(){
+				$.ajax({
+					url: '{{url_for("run_spider")}}',
+					type: "post",
+					data: {url:trim($("#url").val())},
+					beforeSend:function(xhr){
+					  xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token() }}')
+					},
+					success: function (data) {
+							if (data == 'ok') {
+								interval = setInterval(updateResult, 3000);
+								result_container.html("")
+								result_container.append(loader)
+							}
+						}
+				})
+			}
+
+            function updateResult() {
+                $.ajax({
+                    url: "analysis",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.status == 'finish' ) {
+							clearInterval(interval);
+							loader.remove();
+							goods_info = '<h3>'+data['goods_info']['goods_name']+'</h3><p>京东价格:'+data.goods_info['goods_price']+'元</p>';
+							goods_info += "<p>数据分析如下:</p>"
+							result_container.append($(goods_info))
+
+							comments_count_img = '<img class="img-responsive" src="'+data.comments+'"/>'
+                            result_container.append($(comments_count_img))
+
+                            hot_words_img = '<img class="img-responsive" src="'+data.wordcloud+'"/>'
+                            result_container.append($(hot_words_img))
+
+                        }
+                    },
+                    error: function () {
+                        clearInterval(interval);
+                        result_container.append('<p> ' + '<strong style="color: red; font-size: 24px;">对不起，出现错误，请重试</strong>' + '</p>');
+                        loader.remove();
+                    }
+                });
+            }
+        });
+
+         // 去url两端空格
+         function trim(str){
+　　     	return str.replace(/(^\s*)|(\s*$)/g, "");
+　　 	}
+	</script>
+{% endblock %}
