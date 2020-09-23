@@ -135,14 +135,14 @@ class JdSpider:
                 return comments_data['comments']
 
 
-if __name__ == '__main__':
-    jd_spider = JdSpider(70349975885)
-    goods_info = jd_spider.get_good_info()
-    if goods_info.get('goods_name') is not None:
-        goods_comment_summary_data = jd_spider.get_comments_summary()
-        if goods_comment_summary_data:
-            print(goods_comment_summary_data)
-            pages = min(2, round(goods_comment_summary_data['CommentCount'] / 10))
-            for page in range(1, pages):
-                result = jd_spider.get_comments_list(page)
-                print(result)
+# if __name__ == '__main__':
+#     jd_spider = JdSpider(70349975885)
+#     goods_info = jd_spider.get_good_info()
+#     if goods_info.get('goods_name') is not None:
+#         goods_comment_summary_data = jd_spider.get_comments_summary()
+#         if goods_comment_summary_data:
+#             print(goods_comment_summary_data)
+#             pages = min(2, round(goods_comment_summary_data['CommentCount'] / 10))
+#             for page in range(1, pages):
+#                 result = jd_spider.get_comments_list(page)
+#                 print(result)

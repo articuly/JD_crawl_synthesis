@@ -38,7 +38,7 @@ class JdAnalysis:
         df = pd.read_sql(comment_sql, self.cnx)
         # print(df.info())
         s = df.iloc[0]
-        s.rename('好评占比', inplace=True)
+        s.rename('评价占比', inplace=True)
         s.rename(index={'good_count': '好评', 'general_count': '中评', 'poor_count': '差评'}, inplace=True)
         print(s)
         try:
@@ -67,6 +67,7 @@ class JdAnalysis:
     def update_goods_info(self):
         sql = "update `jd`.`goods_info` set can_analysis=1 where goods_id={goods_id};"
         sql = sql.format(goods_id=self.goods_id)
+        self.cursor.execute(sql)
         self.cnx.commit()
 
     def __del__(self):
@@ -81,13 +82,13 @@ class JdAnalysis:
             print(e)
 
 
-if __name__ == '__main__':
-    cnxpool = pooling.MySQLConnectionPool(pool_name='mypool', pool_size=10,
-                                          user='root', password='123456',
-                                          host='localhost', database='jd')
-    cnx = cnxpool.get_connection()
-
-    jd_analysis = JdAnalysis(100002183459, cnx)
-    jd_analysis.run_analysis_comment_count()
-    jd_analysis.run_analysis_comment_wordcloud()
-    jd_analysis.update_goods_info()
+# if __name__ == '__main__':
+#     cnxpool = pooling.MySQLConnectionPool(pool_name='mypool', pool_size=10,
+#                                           user='root', password='123456',
+#                                           host='localhost', database='jd')
+#     cnx = cnxpool.get_connection()
+#
+#     jd_analysis = JdAnalysis(100002183459, cnx)
+#     jd_analysis.run_analysis_comment_count()
+#     jd_analysis.run_analysis_comment_wordcloud()
+#     jd_analysis.update_goods_info()
